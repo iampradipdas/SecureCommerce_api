@@ -8,6 +8,8 @@ using SecureCommerce_api.Dal;
 using SecureCommerce_api.Dal.Repositories;
 using SecureCommerce_api.Dal.Repositories.Interfaces;
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
