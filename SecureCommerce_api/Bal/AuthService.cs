@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Cryptography;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
@@ -56,12 +57,70 @@ namespace SecureCommerce_api.Bal
             }
 
             var token = GenerateJwtToken(user);
+            var refreshToken = await CreateRefreshTokenAsync(user.Id);
 
             return new AuthResponseDto
             {
                 Success = true,
                 Message = "Login successful.",
-                Token = token
+                Token = token,
+                RefreshToken = refreshToken.Token
+            };
+        }
+
+        public async Task<AuthResponseDto> RefreshTokenAsync(RefreshTokenRequestDto model)
+        {
+            var existingRefreshToken = await _authRepository.GetRefreshTokenAsync(model.RefreshToken);
+            if (existingRefreshToken?.User == null)
+            {
+                return new AuthResponseDto { Success = false, Message = "Invalid refresh token." };
+            }
+
+            if (existingRefreshToken.IsRevoked == true || existingRefreshToken.ExpiryDate <= DateTime.UtcNow)
+            {
+                return new AuthResponseDto { Success = false, Message = "Refresh token has expired or was revoked." };
+            }
+
+            if (existingRefreshToken.User.IsActive == false)
+            {
+                return new AuthResponseDto { Success = false, Message = "User account is inactive." };
+            }
+
+            existingRefreshToken.IsRevoked = true;
+            await _authRepository.UpdateRefreshTokenAsync(existingRefreshToken);
+
+            var accessToken = GenerateJwtToken(existingRefreshToken.User);
+            var newRefreshToken = await CreateRefreshTokenAsync(existingRefreshToken.User.Id);
+
+            return new AuthResponseDto
+            {
+                Success = true,
+                Message = "Token refreshed successfully.",
+                Token = accessToken,
+                RefreshToken = newRefreshToken.Token
+            };
+        }
+
+        public async Task<AuthResponseDto> RevokeRefreshTokenAsync(RefreshTokenRequestDto model)
+        {
+            var existingRefreshToken = await _authRepository.GetRefreshTokenAsync(model.RefreshToken);
+            if (existingRefreshToken == null)
+            {
+                return new AuthResponseDto { Success = false, Message = "Refresh token not found." };
+            }
+
+            if (existingRefreshToken.IsRevoked == true)
+            {
+                return new AuthResponseDto { Success = true, Message = "Refresh token already revoked." };
+            }
+
+            existingRefreshToken.IsRevoked = true;
+            await _authRepository.UpdateRefreshTokenAsync(existingRefreshToken);
+
+            return new AuthResponseDto
+            {
+                Success = true,
+                Message = "Refresh token revoked successfully."
             };
         }
 
@@ -90,6 +149,33 @@ namespace SecureCommerce_api.Bal
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
+        }
+
+        private async Task<RefreshToken> CreateRefreshTokenAsync(Guid userId)
+        {
+            var refreshToken = new RefreshToken
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                Token = GenerateSecureRefreshToken(),
+                ExpiryDate = DateTime.UtcNow.AddDays(GetRefreshTokenExpiryDays()),
+                IsRevoked = false
+            };
+
+            return await _authRepository.CreateRefreshTokenAsync(refreshToken);
+        }
+
+        private string GenerateSecureRefreshToken()
+        {
+            var randomBytes = RandomNumberGenerator.GetBytes(64);
+            return Convert.ToBase64String(randomBytes);
+        }
+
+        private int GetRefreshTokenExpiryDays()
+        {
+            return int.TryParse(_configuration["Jwt:RefreshTokenExpiryDays"], out var expiryDays)
+                ? expiryDays
+                : 7;
         }
     }
 }
