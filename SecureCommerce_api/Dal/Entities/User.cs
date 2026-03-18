@@ -32,6 +32,9 @@ public partial class User
     public DateTime? CreatedAt { get; set; }
 
     [InverseProperty("User")]
+    public virtual Cart? Cart { get; set; }
+
+    [InverseProperty("User")]
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
     [InverseProperty("Vendor")]

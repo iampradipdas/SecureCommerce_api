@@ -16,6 +16,10 @@ public partial class SecureCommerceContext : DbContext
     {
     }
 
+    public virtual DbSet<Cart> Carts { get; set; }
+
+    public virtual DbSet<CartItem> CartItems { get; set; }
+
     public virtual DbSet<FlywaySchemaHistory> FlywaySchemaHistories { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
@@ -41,6 +45,34 @@ public partial class SecureCommerceContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Cart>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("carts_pkey");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne(d => d.User).WithOne(p => p.Cart)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("carts_user_id_fkey");
+        });
+
+        modelBuilder.Entity<CartItem>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("cart_items_pkey");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne(d => d.Cart).WithMany(p => p.CartItems).HasConstraintName("cart_items_cart_id_fkey");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.CartItems)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("cart_items_product_id_fkey");
+        });
+
         modelBuilder.Entity<FlywaySchemaHistory>(entity =>
         {
             entity.HasKey(e => e.InstalledRank).HasName("flyway_schema_history_pk");

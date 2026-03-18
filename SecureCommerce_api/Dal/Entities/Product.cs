@@ -30,6 +30,9 @@ public partial class Product
     public Guid? VendorId { get; set; }
 
     [InverseProperty("Product")]
+    public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
+
+    [InverseProperty("Product")]
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
     [ForeignKey("VendorId")]
