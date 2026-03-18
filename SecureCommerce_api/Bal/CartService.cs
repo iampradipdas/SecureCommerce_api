@@ -1,3 +1,4 @@
+using AutoMapper;
 using SecureCommerce_api.Bal.Interfaces;
 using SecureCommerce_api.Dal.Entities;
 using SecureCommerce_api.Dal.Repositories.Interfaces;
@@ -8,10 +9,12 @@ namespace SecureCommerce_api.Bal
     public class CartService : ICartService
     {
         private readonly ICartRepository _cartRepository;
+        private readonly IMapper _mapper;
 
-        public CartService(ICartRepository cartRepository)
+        public CartService(ICartRepository cartRepository, IMapper mapper)
         {
             _cartRepository = cartRepository;
+            _mapper = mapper;
         }
 
         public async Task<CartDto> GetCartAsync(Guid userId)
@@ -149,32 +152,10 @@ namespace SecureCommerce_api.Bal
 
         private CartDto MapCart(Cart cart)
         {
-            var items = cart.CartItems
-                .Select(item =>
-                {
-                    var unitPrice = item.Product?.Price ?? 0;
-
-                    return new CartItemDto
-                    {
-                        Id = item.Id,
-                        ProductId = item.ProductId,
-                        ProductName = item.Product?.Name ?? string.Empty,
-                        ProductDescription = item.Product?.Description,
-                        UnitPrice = unitPrice,
-                        Quantity = item.Quantity,
-                        LineTotal = unitPrice * item.Quantity
-                    };
-                })
-                .ToList();
-
-            return new CartDto
-            {
-                Id = cart.Id,
-                UserId = cart.UserId,
-                Items = items,
-                TotalItems = items.Sum(item => item.Quantity),
-                TotalAmount = items.Sum(item => item.LineTotal)
-            };
+            var cartDto = _mapper.Map<CartDto>(cart);
+            cartDto.TotalItems = cartDto.Items.Sum(item => item.Quantity);
+            cartDto.TotalAmount = cartDto.Items.Sum(item => item.LineTotal);
+            return cartDto;
         }
     }
 }
