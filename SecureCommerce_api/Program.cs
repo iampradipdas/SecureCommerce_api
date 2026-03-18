@@ -5,6 +5,7 @@ using SecureCommerce_api.Dal;
 using SecureCommerce_api.Dal.Repositories;
 using SecureCommerce_api.Dal.Repositories.Interfaces;
 using SecureCommerce_api.Extensions;
+using SecureCommerce_api.Mappings;
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -12,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddAutoMapper(typeof(ProductProfile));
 
 // Configure DbContext
 builder.Services.AddDbContext<SecureCommerceContext>(options =>
@@ -20,6 +22,8 @@ builder.Services.AddDbContext<SecureCommerceContext>(options =>
 // Configure Dependency Injection
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddJwtAuthorization(builder.Configuration);
 
