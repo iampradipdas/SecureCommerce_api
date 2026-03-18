@@ -64,7 +64,13 @@ namespace SecureCommerce_api.Bal
                 Success = true,
                 Message = "Login successful.",
                 Token = token,
-                RefreshToken = refreshToken.Token
+                RefreshToken = refreshToken.Token,
+                User = new UserInfo
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Email = user.Email
+                }
             };
         }
 
