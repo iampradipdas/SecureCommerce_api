@@ -1,5 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using SecureCommerce_api.Bal;
 using SecureCommerce_api.Bal.Interfaces;
+using SecureCommerce_api.Dal;
 using SecureCommerce_api.Dal.Repositories;
 using SecureCommerce_api.Dal.Repositories.Interfaces;
 using SecureCommerce_api.Mappings;
@@ -16,6 +18,8 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ICartRepository, CartRepository>();
         services.AddScoped<ICartService, CartService>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IProductService, ProductService>();
 
