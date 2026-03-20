@@ -69,7 +69,8 @@ namespace SecureCommerce_api.Bal
                 {
                     Id = user.Id,
                     Name = user.Name,
-                    Email = user.Email
+                    Email = user.Email,
+                    Roles = user.UserRoles.Select(ur => ur.Role.Name!).ToList()
                 }
             };
         }
@@ -141,6 +142,11 @@ namespace SecureCommerce_api.Bal
                 new Claim(JwtRegisteredClaimNames.Email, user.Email!),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
+
+            foreach (var userRole in user.UserRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, userRole.Role.Name!));
+            }
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

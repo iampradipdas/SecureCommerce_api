@@ -17,9 +17,9 @@ namespace SecureCommerce_api.Bal
             _mapper = mapper;
         }
 
-        public async Task<IReadOnlyCollection<ProductDto>> GetProductsAsync()
+        public async Task<IReadOnlyCollection<ProductDto>> GetProductsAsync(Guid? categoryId = null, string? searchTerm = null)
         {
-            var products = await _productRepository.GetProductsAsync();
+            var products = await _productRepository.GetProductsAsync(categoryId, searchTerm);
             return _mapper.Map<List<ProductDto>>(products);
         }
 
@@ -44,7 +44,8 @@ namespace SecureCommerce_api.Bal
                 Description = string.IsNullOrWhiteSpace(model.Description) ? null : model.Description.Trim(),
                 Price = model.Price,
                 Stock = model.Stock,
-                VendorId = vendorId
+                VendorId = vendorId,
+                CategoryId = model.CategoryId
             };
 
             var createdProduct = await _productRepository.CreateProductAsync(product);
@@ -63,6 +64,7 @@ namespace SecureCommerce_api.Bal
             product.Description = string.IsNullOrWhiteSpace(model.Description) ? null : model.Description.Trim();
             product.Price = model.Price;
             product.Stock = model.Stock;
+            product.CategoryId = model.CategoryId;
 
             await _productRepository.UpdateProductAsync(product);
             return _mapper.Map<ProductDto>(product);

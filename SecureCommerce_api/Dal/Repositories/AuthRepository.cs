@@ -15,7 +15,10 @@ namespace SecureCommerce_api.Dal.Repositories
 
         public async Task<User?> GetUserByEmailAsync(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            return await _context.Users
+                .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
+                .FirstOrDefaultAsync(u => u.Email == email);
         }
 
         public async Task<bool> UserExistsAsync(string email)
@@ -41,6 +44,8 @@ namespace SecureCommerce_api.Dal.Repositories
         {
             return await _context.RefreshTokens
                 .Include(rt => rt.User)
+                    .ThenInclude(u => u!.UserRoles)
+                        .ThenInclude(ur => ur.Role)
                 .FirstOrDefaultAsync(rt => rt.Token == token);
         }
 

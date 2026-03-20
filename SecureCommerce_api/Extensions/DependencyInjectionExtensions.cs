@@ -22,6 +22,10 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<ICategoryService, CategoryService>();
+        services.AddScoped<IReviewRepository, ReviewRepository>();
+        services.AddScoped<IReviewService, ReviewService>();
 
         return services;
     }

@@ -4,7 +4,7 @@ namespace SecureCommerce_api.Bal.Interfaces
 {
     public interface IProductService
     {
-        Task<IReadOnlyCollection<ProductDto>> GetProductsAsync();
+        Task<IReadOnlyCollection<ProductDto>> GetProductsAsync(Guid? categoryId = null, string? searchTerm = null);
         Task<IReadOnlyCollection<ProductDto>> GetProductsByVendorAsync(Guid vendorId);
         Task<ProductDto?> GetProductByIdAsync(Guid productId);
         Task<ProductDto> CreateProductAsync(Guid vendorId, CreateProductDto model);

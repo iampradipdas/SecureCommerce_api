@@ -19,9 +19,9 @@ namespace SecureCommerce_api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProducts()
+        public async Task<IActionResult> GetProducts([FromQuery] Guid? categoryId, [FromQuery] string? searchTerm)
         {
-            var products = await _productService.GetProductsAsync();
+            var products = await _productService.GetProductsAsync(categoryId, searchTerm);
             return Ok(products);
         }
 

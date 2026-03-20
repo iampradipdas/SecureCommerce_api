@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -29,13 +29,23 @@ public partial class Product
     [Column("vendor_id")]
     public Guid? VendorId { get; set; }
 
+    [Column("category_id")]
+    public Guid? CategoryId { get; set; }
+
     [InverseProperty("Product")]
     public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
 
     [InverseProperty("Product")]
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
+    [InverseProperty("Product")]
+    public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
+
     [ForeignKey("VendorId")]
     [InverseProperty("Products")]
     public virtual User? Vendor { get; set; }
+
+    [ForeignKey("CategoryId")]
+    [InverseProperty("Products")]
+    public virtual Category? Category { get; set; }
 }

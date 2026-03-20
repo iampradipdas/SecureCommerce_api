@@ -15,5 +15,7 @@ namespace SecureCommerce_api.DTOs.Product
 
         [Range(0, int.MaxValue)]
         public int Stock { get; set; }
+
+        public Guid? CategoryId { get; set; }
     }
 }
