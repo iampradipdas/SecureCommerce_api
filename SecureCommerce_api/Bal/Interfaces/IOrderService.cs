@@ -6,6 +6,8 @@ namespace SecureCommerce_api.Bal.Interfaces
     {
         Task<(bool Success, string Message, OrderDto? Order)> CheckoutAsync(Guid userId, CheckoutDto checkoutDto);
         Task<IReadOnlyCollection<OrderDto>> GetOrdersAsync(Guid userId);
+        Task<IReadOnlyCollection<OrderDto>> GetVendorOrdersAsync(Guid vendorId);
         Task<OrderDto?> GetOrderByIdAsync(Guid userId, Guid orderId);
+        Task<bool> UpdateOrderStatusAsync(Guid orderId, string status);
     }
 }

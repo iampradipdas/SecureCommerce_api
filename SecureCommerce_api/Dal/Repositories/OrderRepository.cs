@@ -120,5 +120,26 @@ namespace SecureCommerce_api.Dal.Repositories
                 .ThenInclude(item => item.Product)
                 .FirstOrDefaultAsync(order => order.UserId == userId && order.Id == orderId);
         }
+
+        public async Task<IReadOnlyCollection<Order>> GetOrdersByVendorIdAsync(Guid vendorId)
+        {
+            return await _context.Orders
+                .AsNoTracking()
+                .Include(order => order.OrderItems)
+                .ThenInclude(item => item.Product)
+                .Where(order => order.OrderItems.Any(item => item.Product.VendorId == vendorId))
+                .OrderByDescending(order => order.CreatedAt)
+                .ToListAsync();
+        }
+
+        public async Task<bool> UpdateOrderStatusAsync(Guid orderId, string status)
+        {
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order == null) return false;
+
+            order.Status = status;
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

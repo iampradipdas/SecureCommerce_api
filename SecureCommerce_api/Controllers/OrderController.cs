@@ -3,6 +3,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SecureCommerce_api.Bal.Interfaces;
+using SecureCommerce_api.DTOs.Order;
 
 namespace SecureCommerce_api.Controllers
 {
@@ -70,6 +71,33 @@ namespace SecureCommerce_api.Controllers
             }
 
             return Ok(order);
+        }
+
+        [HttpGet("vendor")]
+        [Authorize(Roles = "Vendor")]
+        public async Task<IActionResult> GetVendorOrders()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == null)
+            {
+                return Unauthorized(new { Message = "Invalid user token." });
+            }
+
+            var orders = await _orderService.GetVendorOrdersAsync(userId.Value);
+            return Ok(orders);
+        }
+
+        [HttpPut("{id:guid}/status")]
+        [Authorize(Roles = "Vendor")]
+        public async Task<IActionResult> UpdateOrderStatus(Guid id, [FromBody] string status)
+        {
+            var result = await _orderService.UpdateOrderStatusAsync(id, status);
+            if (!result)
+            {
+                return NotFound(new { Message = "Order not found." });
+            }
+
+            return Ok(new { Message = "Order status updated successfully." });
         }
 
         private Guid? GetCurrentUserId()

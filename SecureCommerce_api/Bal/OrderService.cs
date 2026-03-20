@@ -43,5 +43,16 @@ namespace SecureCommerce_api.Bal
             var order = await _orderRepository.GetOrderByIdAsync(userId, orderId);
             return order == null ? null : _mapper.Map<OrderDto>(order);
         }
+
+        public async Task<IReadOnlyCollection<OrderDto>> GetVendorOrdersAsync(Guid vendorId)
+        {
+            var orders = await _orderRepository.GetOrdersByVendorIdAsync(vendorId);
+            return _mapper.Map<List<OrderDto>>(orders);
+        }
+
+        public async Task<bool> UpdateOrderStatusAsync(Guid orderId, string status)
+        {
+            return await _orderRepository.UpdateOrderStatusAsync(orderId, status);
+        }
     }
 }
