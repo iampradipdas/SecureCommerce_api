@@ -19,15 +19,20 @@ namespace SecureCommerce_api.Controllers
         }
 
         [HttpPost("checkout")]
-        public async Task<IActionResult> Checkout()
+        public async Task<IActionResult> Checkout([FromBody] CheckoutDto model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var userId = GetCurrentUserId();
             if (userId == null)
             {
                 return Unauthorized(new { Message = "Invalid user token." });
             }
 
-            var result = await _orderService.CheckoutAsync(userId.Value);
+            var result = await _orderService.CheckoutAsync(userId.Value, model);
             if (!result.Success)
             {
                 return BadRequest(new { result.Message });

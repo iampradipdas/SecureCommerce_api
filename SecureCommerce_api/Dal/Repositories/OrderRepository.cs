@@ -13,7 +13,14 @@ namespace SecureCommerce_api.Dal.Repositories
             _context = context;
         }
 
-        public async Task<(bool Success, string Message, Order? Order)> CheckoutAsync(Guid userId)
+        public async Task<(bool Success, string Message, Order? Order)> CheckoutAsync(
+            Guid userId, 
+            string fullName, 
+            string address, 
+            string city, 
+            string zipCode, 
+            string country, 
+            string paymentMethod)
         {
             await using var transaction = await _context.Database.BeginTransactionAsync();
 
@@ -46,6 +53,13 @@ namespace SecureCommerce_api.Dal.Repositories
                 Id = Guid.NewGuid(),
                 UserId = userId,
                 Status = "Placed",
+                ShippingFullName = fullName,
+                ShippingAddress = address,
+                ShippingCity = city,
+                ShippingZipCode = zipCode,
+                ShippingCountry = country,
+                PaymentStatus = "Pending",
+                PaymentMethod = paymentMethod,
                 CreatedAt = DateTime.UtcNow,
                 TotalAmount = 0
             };

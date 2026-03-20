@@ -16,9 +16,17 @@ namespace SecureCommerce_api.Bal
             _mapper = mapper;
         }
 
-        public async Task<(bool Success, string Message, OrderDto? Order)> CheckoutAsync(Guid userId)
+        public async Task<(bool Success, string Message, OrderDto? Order)> CheckoutAsync(Guid userId, CheckoutDto checkoutDto)
         {
-            var result = await _orderRepository.CheckoutAsync(userId);
+            var result = await _orderRepository.CheckoutAsync(
+                userId,
+                checkoutDto.ShippingFullName,
+                checkoutDto.ShippingAddress,
+                checkoutDto.ShippingCity,
+                checkoutDto.ShippingZipCode,
+                checkoutDto.ShippingCountry,
+                checkoutDto.PaymentMethod
+            );
             return result.Order == null
                 ? (result.Success, result.Message, null)
                 : (result.Success, result.Message, _mapper.Map<OrderDto>(result.Order));
