@@ -32,6 +32,9 @@ public partial class Product
     [Column("category_id")]
     public Guid? CategoryId { get; set; }
 
+    [Column("image_url")]
+    public string? ImageUrl { get; set; }
+
     [InverseProperty("Product")]
     public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
 

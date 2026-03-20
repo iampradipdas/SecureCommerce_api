@@ -54,5 +54,17 @@ namespace SecureCommerce_api.Dal.Repositories
             _context.RefreshTokens.Update(refreshToken);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Role?> GetRoleByNameAsync(string roleName)
+        {
+            return await _context.Roles.FirstOrDefaultAsync(r => r.Name == roleName);
+        }
+
+        public async Task AssignRoleAsync(Guid userId, int roleId)
+        {
+            var userRole = new UserRole { UserId = userId, RoleId = roleId };
+            _context.UserRoles.Add(userRole);
+            await _context.SaveChangesAsync();
+        }
     }
 }

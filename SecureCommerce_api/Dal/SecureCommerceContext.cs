@@ -164,9 +164,11 @@ public partial class SecureCommerceContext : DbContext
 
         modelBuilder.Entity<UserRole>(entity =>
         {
-            entity.HasOne(d => d.Role).WithMany().HasConstraintName("user_roles_role_id_fkey");
+            entity.HasKey(e => new { e.UserId, e.RoleId }).HasName("user_roles_pkey");
 
-            entity.HasOne(d => d.User).WithMany().HasConstraintName("user_roles_user_id_fkey");
+            entity.HasOne(d => d.Role).WithMany().HasForeignKey(d => d.RoleId).HasConstraintName("user_roles_role_id_fkey");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserRoles).HasForeignKey(d => d.UserId).HasConstraintName("user_roles_user_id_fkey");
         });
 
         modelBuilder.Entity<Review>(entity =>

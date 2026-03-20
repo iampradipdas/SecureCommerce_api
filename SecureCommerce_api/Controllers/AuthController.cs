@@ -18,27 +18,41 @@ namespace SecureCommerce_api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-            var response = await _authService.RegisterAsync(model);
-            if (!response.Success)
-                return BadRequest(response);
+                var result = await _authService.RegisterAsync(model);
+                if (result.Success)
+                    return Ok(result);
 
-            return Ok(response);
+                return BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "An internal server error occurred.", Details = ex.Message, InnerDetails = ex.InnerException?.Message });
+            }
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-            var response = await _authService.LoginAsync(model);
-            if (!response.Success)
-                return Unauthorized(response);
+                var result = await _authService.LoginAsync(model);
+                if (result.Success)
+                    return Ok(result);
 
-            return Ok(response);
+                return Unauthorized(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "An internal server error occurred.", Details = ex.Message, InnerDetails = ex.InnerException?.Message });
+            }
         }
 
         [HttpPost("refresh")]

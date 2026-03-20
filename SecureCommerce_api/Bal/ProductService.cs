@@ -45,7 +45,8 @@ namespace SecureCommerce_api.Bal
                 Price = model.Price,
                 Stock = model.Stock,
                 VendorId = vendorId,
-                CategoryId = model.CategoryId
+                CategoryId = model.CategoryId,
+                ImageUrl = model.ImageUrl
             };
 
             var createdProduct = await _productRepository.CreateProductAsync(product);
@@ -65,6 +66,7 @@ namespace SecureCommerce_api.Bal
             product.Price = model.Price;
             product.Stock = model.Stock;
             product.CategoryId = model.CategoryId;
+            product.ImageUrl = model.ImageUrl;
 
             await _productRepository.UpdateProductAsync(product);
             return _mapper.Map<ProductDto>(product);

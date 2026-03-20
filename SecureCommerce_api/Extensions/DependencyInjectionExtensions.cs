@@ -27,6 +27,9 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IReviewRepository, ReviewRepository>();
         services.AddScoped<IReviewService, ReviewService>();
 
+        services.AddHttpContextAccessor();
+        services.AddScoped<IImageService, LocalImageService>();
+
         return services;
     }
 }

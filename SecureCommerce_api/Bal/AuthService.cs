@@ -40,6 +40,12 @@ namespace SecureCommerce_api.Bal
 
             await _authRepository.CreateUserAsync(user);
 
+            var role = await _authRepository.GetRoleByNameAsync(model.Role);
+            if (role != null)
+            {
+                await _authRepository.AssignRoleAsync(user.Id, role.Id);
+            }
+
             return new AuthResponseDto { Success = true, Message = "User registered successfully." };
         }
 
@@ -70,7 +76,7 @@ namespace SecureCommerce_api.Bal
                     Id = user.Id,
                     Name = user.Name,
                     Email = user.Email,
-                    Roles = user.UserRoles.Select(ur => ur.Role.Name!).ToList()
+                    Roles = user.UserRoles.Select(ur => ur.Role?.Name ?? "User").ToList()
                 }
             };
         }

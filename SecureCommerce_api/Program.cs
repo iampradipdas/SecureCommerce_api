@@ -39,6 +39,8 @@ app.UseCors("AllowAngularDev");
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles();  // Enable serving static files from wwwroot
+
 app.UseJwtAuthorization();
 
 app.MapControllers();

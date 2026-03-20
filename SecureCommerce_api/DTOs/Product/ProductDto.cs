@@ -12,5 +12,6 @@ namespace SecureCommerce_api.DTOs.Product
         public string? CategoryName { get; set; }
         public double AverageRating { get; set; }
         public int ReviewCount { get; set; }
+        public string? ImageUrl { get; set; }
     }
 }

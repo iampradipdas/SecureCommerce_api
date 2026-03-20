@@ -10,5 +10,7 @@ namespace SecureCommerce_api.Dal.Repositories.Interfaces
         Task<RefreshToken> CreateRefreshTokenAsync(RefreshToken refreshToken);
         Task<RefreshToken?> GetRefreshTokenAsync(string token);
         Task UpdateRefreshTokenAsync(RefreshToken refreshToken);
+        Task<Role?> GetRoleByNameAsync(string roleName);
+        Task AssignRoleAsync(Guid userId, int roleId);
     }
 }
