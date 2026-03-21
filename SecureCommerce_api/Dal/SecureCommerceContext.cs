@@ -42,8 +42,6 @@ public partial class SecureCommerceContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    public virtual DbSet<UserRole> UserRoles { get; set; }
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseNpgsql("Name=ConnectionStrings:DefaultConnection");
 
@@ -160,16 +158,12 @@ public partial class SecureCommerceContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
+
+            entity.HasOne(d => d.Role).WithMany(p => p.Users)
+                .HasForeignKey(d => d.RoleId)
+                .HasConstraintName("fk_user_role");
         });
 
-        modelBuilder.Entity<UserRole>(entity =>
-        {
-            entity.HasKey(e => new { e.UserId, e.RoleId }).HasName("user_roles_pkey");
-
-            entity.HasOne(d => d.Role).WithMany().HasForeignKey(d => d.RoleId).HasConstraintName("user_roles_role_id_fkey");
-
-            entity.HasOne(d => d.User).WithMany(p => p.UserRoles).HasForeignKey(d => d.UserId).HasConstraintName("user_roles_user_id_fkey");
-        });
 
         modelBuilder.Entity<Review>(entity =>
         {
