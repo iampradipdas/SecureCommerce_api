@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SecureCommerce_api.Bal.Interfaces;
@@ -8,7 +9,8 @@ using SecureCommerce_api.DTOs.Category;
 
 namespace SecureCommerce_api.Controllers;
 
-[Route("api/[controller]")]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
 [ApiController]
 public class CategoryController : ControllerBase
 {
