@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using SecureCommerce_api.Dal;
 using SecureCommerce_api.Extensions;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -13,6 +15,11 @@ builder.Services.AddDbContext<SecureCommerceContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection") ?? "Host=localhost;Port=5432;User Id=postgres;Password=Pradip@123;Database=securecommerce_db"));
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddJwtAuthorization(builder.Configuration);
+
+// Add FluentValidation services
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddFluentValidationAutoValidation();
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
