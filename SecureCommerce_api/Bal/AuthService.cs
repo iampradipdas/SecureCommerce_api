@@ -76,7 +76,7 @@ namespace SecureCommerce_api.Bal
                     Id = user.Id,
                     Name = user.Name,
                     Email = user.Email,
-                    Roles = user.UserRoles.Select(ur => ur.Role?.Name ?? "User").ToList()
+                    Roles = user.Role != null ? new List<string> { user.Role.Name ?? "User" } : new List<string> { "User" }
                 }
             };
         }
@@ -149,9 +149,9 @@ namespace SecureCommerce_api.Bal
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
-            foreach (var userRole in user.UserRoles)
+            if (user.Role != null)
             {
-                claims.Add(new Claim(ClaimTypes.Role, userRole.Role.Name!));
+                claims.Add(new Claim(ClaimTypes.Role, user.Role.Name!));
             }
 
             var tokenDescriptor = new SecurityTokenDescriptor

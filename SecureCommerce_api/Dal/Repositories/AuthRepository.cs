@@ -16,8 +16,7 @@ namespace SecureCommerce_api.Dal.Repositories
         public async Task<User?> GetUserByEmailAsync(string email)
         {
             return await _context.Users
-                .Include(u => u.UserRoles)
-                .ThenInclude(ur => ur.Role)
+                .Include(u => u.Role)
                 .FirstOrDefaultAsync(u => u.Email == email);
         }
 
@@ -44,8 +43,7 @@ namespace SecureCommerce_api.Dal.Repositories
         {
             return await _context.RefreshTokens
                 .Include(rt => rt.User)
-                    .ThenInclude(u => u!.UserRoles)
-                        .ThenInclude(ur => ur.Role)
+                    .ThenInclude(u => u!.Role)
                 .FirstOrDefaultAsync(rt => rt.Token == token);
         }
 
@@ -62,9 +60,12 @@ namespace SecureCommerce_api.Dal.Repositories
 
         public async Task AssignRoleAsync(Guid userId, int roleId)
         {
-            var userRole = new UserRole { UserId = userId, RoleId = roleId };
-            _context.UserRoles.Add(userRole);
-            await _context.SaveChangesAsync();
+            var user = await _context.Users.FindAsync(userId);
+            if (user != null)
+            {
+                user.RoleId = roleId;
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

@@ -31,6 +31,13 @@ public partial class User
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime? CreatedAt { get; set; }
 
+    [Column("role_id")]
+    public int? RoleId { get; set; }
+
+    [ForeignKey("RoleId")]
+    [InverseProperty("Users")]
+    public virtual Role? Role { get; set; }
+
     [InverseProperty("User")]
     public virtual Cart? Cart { get; set; }
 
@@ -46,5 +53,4 @@ public partial class User
     [InverseProperty("User")]
     public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
 
-    public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }
