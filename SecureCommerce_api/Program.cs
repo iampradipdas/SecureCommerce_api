@@ -37,16 +37,6 @@ builder.Services.AddApiVersioning(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("ProductRead", policy => policy.RequireClaim("Permission", "product:read"));
-    options.AddPolicy("ProductWrite", policy => policy.RequireClaim("Permission", "product:write"));
-    options.AddPolicy("ProductDelete", policy => policy.RequireClaim("Permission", "product:delete"));
-    options.AddPolicy("CategoryWrite", policy => policy.RequireClaim("Permission", "category:write"));
-    options.AddPolicy("OrderShip", policy => policy.RequireClaim("Permission", "order:ship"));
-    options.AddPolicy("AdminOnly", policy => policy.RequireClaim("Permission", "user:manage"));
-});
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularDev",

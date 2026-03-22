@@ -31,7 +31,15 @@ public static class AuthorizationExtensions
             };
         });
 
-        services.AddAuthorization();
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("ProductRead", policy => policy.RequireClaim("Permission", "product:read"));
+            options.AddPolicy("ProductWrite", policy => policy.RequireClaim("Permission", "product:write"));
+            options.AddPolicy("ProductDelete", policy => policy.RequireClaim("Permission", "product:delete"));
+            options.AddPolicy("CategoryWrite", policy => policy.RequireClaim("Permission", "category:write"));
+            options.AddPolicy("OrderShip", policy => policy.RequireClaim("Permission", "order:ship"));
+            options.AddPolicy("AdminOnly", policy => policy.RequireClaim("Permission", "user:manage"));
+        });
 
         return services;
     }
