@@ -1,13 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace SecureCommerce_api.Dal.Entities;
 
 [Table("permissions")]
-[Index("Name", Name = "permissions_name_key", IsUnique = true)]
 public partial class Permission
 {
     [Key]
@@ -16,5 +14,9 @@ public partial class Permission
 
     [Column("name")]
     [StringLength(100)]
-    public string? Name { get; set; }
+    public string Name { get; set; } = string.Empty;
+
+    [Column("description")]
+    [StringLength(255)]
+    public string? Description { get; set; }
 }

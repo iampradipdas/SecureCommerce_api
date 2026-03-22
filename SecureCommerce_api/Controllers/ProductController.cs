@@ -53,7 +53,7 @@ namespace SecureCommerce_api.Controllers
             return Ok(products);
         }
 
-        [Authorize]
+        [Authorize(Policy = "ProductWrite")]
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto model)
         {
@@ -72,7 +72,7 @@ namespace SecureCommerce_api.Controllers
             return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
         }
 
-        [Authorize]
+        [Authorize(Policy = "ProductWrite")]
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] UpdateProductDto model)
         {
@@ -96,7 +96,7 @@ namespace SecureCommerce_api.Controllers
             return Ok(product);
         }
 
-        [Authorize]
+        [Authorize(Policy = "ProductDelete")]
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteProduct(Guid id)
         {

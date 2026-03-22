@@ -40,7 +40,7 @@ public class CategoryController : ControllerBase
         return Ok(category);
     }
 
-    [Authorize] // Should ideally be Admin only, but for now we'll allow authorized users
+    [Authorize(Policy = "CategoryWrite")]
     [HttpPost]
     public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryDto model)
     {
@@ -53,7 +53,7 @@ public class CategoryController : ControllerBase
         return CreatedAtAction(nameof(GetCategoryById), new { id = category.Id }, category);
     }
 
-    [Authorize]
+    [Authorize(Policy = "CategoryWrite")]
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateCategory(Guid id, [FromBody] UpdateCategoryDto model)
     {
@@ -71,7 +71,7 @@ public class CategoryController : ControllerBase
         return Ok(category);
     }
 
-    [Authorize]
+    [Authorize(Policy = "CategoryWrite")]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteCategory(Guid id)
     {

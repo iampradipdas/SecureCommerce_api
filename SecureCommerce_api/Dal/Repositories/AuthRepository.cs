@@ -67,5 +67,13 @@ namespace SecureCommerce_api.Dal.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<IReadOnlyCollection<string>> GetPermissionsByRoleIdAsync(int roleId)
+        {
+            return await _context.RolePermissions
+                .Where(rp => rp.RoleId == roleId)
+                .Select(rp => rp.Permission!.Name)
+                .ToListAsync();
+        }
     }
 }

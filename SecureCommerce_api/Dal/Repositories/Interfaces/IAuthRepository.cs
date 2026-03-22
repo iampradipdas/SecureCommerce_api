@@ -12,5 +12,6 @@ namespace SecureCommerce_api.Dal.Repositories.Interfaces
         Task UpdateRefreshTokenAsync(RefreshToken refreshToken);
         Task<Role?> GetRoleByNameAsync(string roleName);
         Task AssignRoleAsync(Guid userId, int roleId);
+        Task<IReadOnlyCollection<string>> GetPermissionsByRoleIdAsync(int roleId);
     }
 }

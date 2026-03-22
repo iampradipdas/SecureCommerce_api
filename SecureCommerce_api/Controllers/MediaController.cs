@@ -1,10 +1,12 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SecureCommerce_api.Bal.Interfaces;
 
 namespace SecureCommerce_api.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     [Authorize]
     public class MediaController : ControllerBase
@@ -17,6 +19,7 @@ namespace SecureCommerce_api.Controllers
         }
 
         [HttpPost("upload-image")]
+        [HttpPost("upload_image")]
         public async Task<IActionResult> UploadImage(IFormFile file)
         {
             try

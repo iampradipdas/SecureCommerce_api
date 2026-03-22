@@ -62,7 +62,11 @@ namespace SecureCommerce_api.Bal
                 return new AuthResponseDto { Success = false, Message = "User account is inactive." };
             }
 
-            var token = GenerateJwtToken(user);
+            var permissions = user.RoleId.HasValue 
+                ? await _authRepository.GetPermissionsByRoleIdAsync(user.RoleId.Value) 
+                : new List<string>();
+
+            var token = GenerateJwtToken(user, permissions);
             var refreshToken = await CreateRefreshTokenAsync(user.Id);
 
             return new AuthResponseDto
@@ -102,7 +106,11 @@ namespace SecureCommerce_api.Bal
             existingRefreshToken.IsRevoked = true;
             await _authRepository.UpdateRefreshTokenAsync(existingRefreshToken);
 
-            var accessToken = GenerateJwtToken(existingRefreshToken.User);
+            var permissions = existingRefreshToken.User.RoleId.HasValue 
+                ? await _authRepository.GetPermissionsByRoleIdAsync(existingRefreshToken.User.RoleId.Value) 
+                : new List<string>();
+
+            var accessToken = GenerateJwtToken(existingRefreshToken.User, permissions);
             var newRefreshToken = await CreateRefreshTokenAsync(existingRefreshToken.User.Id);
 
             return new AuthResponseDto
@@ -137,7 +145,7 @@ namespace SecureCommerce_api.Bal
             };
         }
 
-        private string GenerateJwtToken(User user)
+        private string GenerateJwtToken(User user, IReadOnlyCollection<string> permissions)
         {
             var jwtSettings = _configuration.GetSection("Jwt");
             var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
@@ -152,6 +160,11 @@ namespace SecureCommerce_api.Bal
             if (user.Role != null)
             {
                 claims.Add(new Claim(ClaimTypes.Role, user.Role.Name!));
+            }
+
+            foreach (var permission in permissions)
+            {
+                claims.Add(new Claim("Permission", permission));
             }
 
             var tokenDescriptor = new SecurityTokenDescriptor
