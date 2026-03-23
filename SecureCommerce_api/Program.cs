@@ -63,6 +63,8 @@ app.UseStaticFiles();  // Enable serving static files from wwwroot
 
 app.UseJwtAuthorization();
 
+app.UsePerformanceLogging();
+
 app.MapControllers();
 
 app.Run();
