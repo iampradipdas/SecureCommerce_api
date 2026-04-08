@@ -17,6 +17,8 @@ builder.Services.AddDbContext<SecureCommerceContext>(options =>
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddJwtAuthorization(builder.Configuration);
 
+builder.WebHost.UseUrls("http://0.0.0.0:8080");
+
 // Add FluentValidation services
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddFluentValidationAutoValidation();
